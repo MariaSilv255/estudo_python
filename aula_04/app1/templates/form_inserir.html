@@ -1,4 +1,13 @@
-<form method="post" action="salvar">
-  {% csrf_token %} {{form}}
-  <button type="submit">Salvar</button>
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h1>
+    formulario de inclusao
+</h1>
+<form action="salvar" method="post">
+    {% csrf_token %}
+    {{formulario}}
+    <button class="btn btn-primary" type="submit">Salvar registro</button>
 </form>
+
+{% endblock %}

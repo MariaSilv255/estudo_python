@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h1>Listagem de amigos</h1>
+
+<table class="table table-bordered">
+    <tr>
+        <td>Nome</td>
+        <td>Telefone</td>
+    </tr>
+
+{%for amigo in amigos%}
+<tr>
+    <td>{{amigo.nome}}</td>
+    <td>{{amigo.telefone}}</td>
+</tr>
+{%endfor%}
+</table>
+<a class="" href="inserir">Inseri registro</a>
+
+{% endblock %}
