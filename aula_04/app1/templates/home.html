@@ -13,6 +13,8 @@
 <tr>
     <td>{{amigo.nome}}</td>
     <td>{{amigo.telefone}}</td>
+    <td><a href="{% url 'editar' pk=amigo.id %}">Editar</a></td>
+    <td><a href="{% url 'excluir' pk=amigo.id %}">Excluir</a></td>
 </tr>
 {%endfor%}
 </table>

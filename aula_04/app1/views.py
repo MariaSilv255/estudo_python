@@ -1,20 +1,27 @@
-from django.shortcuts import render,redirect
 from .models import agenda
 from .Forms import InsereRegistros
+from django.views.generic import ListView,CreateView,UpdateView,DeleteView
+from django.urls import reverse_lazy
 
-def home(request):
-    amigos = agenda.objects.all()
-    context = {"amigos":amigos}
-    return render (request,"home.html",context)
+class AgendaListView(ListView):
+    template_name='home.html'
+    model = agenda
+    context_object_name ='amigos'
 
-def inserir(request):
+class AgendaCreateView(CreateView):
+    template_name="form_inserir.html"
+    model = agenda
+    form_class = InsereRegistros
+    success_url = reverse_lazy('lista_amigos') 
     
-    form = InsereRegistros()
-    context = {"formulario":form}
+class AgendaUpdateView(UpdateView):
+    template_name='form_editar.html'
+    model = agenda
+    fields = "__all__"
+    success_url = reverse_lazy('lista_amigos')
     
-    return render(request,"form_inserir.html",context)
-
-def salvar(request):
-    form = InsereRegistros(request.POST)
-    form.save()
-    return redirect(home)
+class AgendaDeleteView(DeleteView):
+    template_name='confirmar_exclusao.html'
+    model = agenda
+    success_url = reverse_lazy("lista_amigos")
+    
