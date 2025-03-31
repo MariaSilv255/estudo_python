@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<a href="inserir">Inserir aluno</a>
+<table>
+    <tr>
+        <td>Matricula</td>
+        <td>Nome</td>
+        <td>Nota 1</td>
+        <td>Nota 2</td>
+    </tr>
+
+    {% for i in notas_alunos %}
+    <tr>
+        <td>{{i.matricula}}</td>
+        <td>{{i.nome_do_aluno}}</td>
+        <td>{{i.nota1}}</td>
+        <td>{{i.nota2}}</td>
+        <td><a href="{% url 'editar' pk=i.id %}">Editar</a></td>
+        <td><a href="{% url 'excluir' pk=i.id %}">Excluir</a></td>
+        
+    </tr>
+    {%endfor%}
+   
+</table>
+
+{%endblock%}
