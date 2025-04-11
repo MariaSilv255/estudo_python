@@ -1,0 +1,99 @@
+#Crie um gatilho chamado tgBloqueiaComentarios_02 que, ao identificar termos pejorativos nos comentários (tais como “idiota”, “imbecil” ou “burro”) apresente uma mensagem repreendendo o usuário. Além disso, o gatilho não deve permitir que o #comentário seja incluído no banco de dados.
+#Por exemplo, o seguinte comentário não seria permitido: Cara, o que tá acontecendo??? Você parece ser um idiota!
+
+DELIMITER $$
+
+CREATE TRIGGER tgBloqueiaComentarios_02
+BEFORE INSERT
+ON tbpost FOR EACH ROW
+BEGIN
+
+    DECLARE msg_erro VARCHAR(250)
+
+    IF (NEW.TxPost = 'Idiota' | NEW.TxPost = 'Imbecil' | NEW.TxPost = 'Burro' ) THEN
+        SET msg_erro = 'Palavras inapropriadas revise o texto';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = msg_erro;
+
+    END IF;
+
+END $$
+DELIMITER ;
+
+CREATE TABLE IF NOT EXISTS comentarios (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    texto TEXT NOT NULL,
+
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    usuario_id INT
+
+) ENGINE=InnoDB;
+
+
+-- gatilho
+DELIMITER //
+
+CREATE TRIGGER tgBloqueiaComentarios_02
+
+BEFORE INSERT ON comentarios
+
+FOR EACH ROW
+
+BEGIN
+
+
+
+    IF (LOWER(NEW.texto) LIKE '%idiota%' OR 
+
+        LOWER(NEW.texto) LIKE '%imbecil%' OR 
+
+        LOWER(NEW.texto) LIKE '%burro%' OR
+
+        LOWER(NEW.texto) LIKE '%estúpido%' OR
+
+        LOWER(NEW.texto) LIKE '%palhaço%') THEN
+
+
+
+        SIGNAL SQLSTATE '45000' 
+
+        SET MESSAGE_TEXT = 'Seu comentário contém palavras inapropriadas. Por favor, revise a mensagem.';
+
+    END IF;
+
+END//
+
+DELIMITER ;
+
+--procedure
+
+Em dbeleicao_rn, crie uma SP chamada spCadastraCandidato para incluir registros na tabela TbCandidato. Como essa tabela possui chaves estrangeiras, atentar para informar códigos de cargos e de partidos existentes nas respectivas tabelas.
+Texto de resposta Questão 3
+
+DELIMITER $$
+
+CREATE PROCEDURE spCadastraCandidato (IN pNoCandidato VARCHAR(50),
+IN pCoCargo TINYINT,IN pCoPartido TINYINT)
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM TbCargo WHERE CoCargo = pCoCargo) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Erro: Cargo informado não existe.';
+
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM TbPartido WHERE CoPartido = pCoPartido) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Erro: Partido informado não existe.';
+    END IF;
+    INSERT INTO TbCandidato (NoCandidato, CoCargo, CoPartido)
+    VALUES (pNoCandidato, pCoCargo, pCoPartido);
+END $$
+DELIMITER ;
+
+CALL spCadastraCandidato('MARIA','1','1')
+
+--GATILHO LOG
+
+CREATE TABLE TBLOG() 
